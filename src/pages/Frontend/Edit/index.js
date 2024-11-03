@@ -1,19 +1,18 @@
 import React, { useContext, useState } from "react";
 import { HomeContext } from "../../../context/HomeContext";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { firestore } from "../../../config/firebase";
 import { AuthContext } from "../../../context/AuthContext";
 
 export default function Edit() {
-  const { currentitem } = useContext(HomeContext);
+  const { currentNote } = useContext(HomeContext);
   const { setIsAppLoading } = useContext(AuthContext);
-  // const [name,setName]=useState('')
-  const [name, setName] = useState(currentitem.name);
-  const [description, setDescription] = useState(currentitem.description);
-  const [price, setPrice] = useState(currentitem.price);
-  const [category, setCategory] = useState(currentitem.category);
-  const params = useParams();
+  const [title, setTitle] = useState(currentNote.title);
+  const [content, setContent] = useState(currentNote.content);
+  const [category, setCategory] = useState(currentNote.category);
+
+
   const navigate = useNavigate("");
   // const {name,description,price,category}=currentitem
   const onedit = async (e) => {
@@ -21,11 +20,10 @@ export default function Edit() {
 
     setIsAppLoading(true);
     try {
-      await updateDoc(doc(firestore, "items", currentitem.id), {
-        ...currentitem,
-        name,
-        description,
-        price,
+      await updateDoc(doc(firestore, "notes", currentNote.id), {
+        ...currentNote,
+        title,
+        content,
         category,
         dateModified: serverTimestamp(),
       });
@@ -48,8 +46,6 @@ export default function Edit() {
   };
 
   const oncancel = () => {
-    console.log("Params", params);
-    console.log("Params.id", params.id);
     navigate("/");
   };
   return (
@@ -61,26 +57,24 @@ export default function Edit() {
               className="card border-none mx-auto p-3 p-md-4"
               style={{ maxWidth: 400 }}
             >
-              <h2 className="text-primary text-center mb-4">Update-Items</h2>
+              <h2 className="text-dark text-center mb-4">Update-Notes</h2>
               <div className="row">
                 <div className="col-12 mb-4">
                   <input
                     type="text"
                     className="form-control"
                     name="name"
-                    placeholder="Enter Items name here"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
                   />
                 </div>
                 <div className="col-12 mb-4">
-                  <input
+                  <textarea
                     type="text"
                     className="form-control"
                     name="description"
-                    placeholder="Enter Items description here"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
                   />
                 </div>
                 <div className="col-12 mb-4">
@@ -88,24 +82,14 @@ export default function Edit() {
                     type="text"
                     className="form-control"
                     name="price"
-                    placeholder="Enter Items price here"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                  />
-                </div>
-                <div className="col-12 mb-4">
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="category"
-                    placeholder="Enter Items category here"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                   />
                 </div>
+
                 <form onSubmit={onedit} className="mb-3">
                   <div className="col-12">
-                    <button className="btn btn-primary w-100">Confirm</button>
+                    <button className="btn btn-dark w-100">Confirm</button>
                   </div>
                 </form>
                 <form onSubmit={oncancel}>

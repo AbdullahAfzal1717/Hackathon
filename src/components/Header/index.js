@@ -12,7 +12,7 @@ export default function Header() {
     <header>
       <nav className="navbar navbar-expand-lg bg-dark navbar-dark">
         <div className="container">
-          <Link to="/dashboard/menu" className="navbar-brand">
+          <Link to="/" className="navbar-brand">
             Home
           </Link>
           <button
@@ -28,11 +28,7 @@ export default function Header() {
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <Link to="/" className="nav-link">
-                  Add Notes
-                </Link>
-              </li>
+
               {/* <li className="nav-item"><Link to="/" className="nav-link">Order Summary</Link></li> */}
               <li className="nav-item dropdown">
                 <button

@@ -5,6 +5,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import Add from "./Add";
 import Edit from "./Edit";
+import ShowNote from "./Home/ShowNote";
 export default function Frontend() {
   return (
     <>
@@ -12,7 +13,8 @@ export default function Frontend() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/Add" element={<Add />} />
-        <Route path="/Edit/:id" element={<Edit />} />
+        <Route path="/Edit" element={<Edit />} />
+        <Route path="/Note" element={<ShowNote />} />
         <Route path="*" element={<h1> Page Not Found </h1>} />
       </Routes>
       <Footer />

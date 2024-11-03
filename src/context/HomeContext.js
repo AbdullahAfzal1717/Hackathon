@@ -3,7 +3,7 @@ import React, { createContext, useState } from "react";
 export const HomeContext = createContext();
 
 export default function HomeContextProvider({ children }) {
-  const [currentitem, setCurrentitem] = useState("");
+  const [currentNote, setCurrentNote] = useState("");
   // const addItems = (userdata) => {
   //   const items = JSON.parse(localStorage.getItem("items")) || [];
   //   items.push(userdata);
@@ -11,7 +11,7 @@ export default function HomeContextProvider({ children }) {
   // };
 
   return (
-    <HomeContext.Provider value={{ currentitem, setCurrentitem }}>
+    <HomeContext.Provider value={{ currentNote, setCurrentNote }}>
       {children}
     </HomeContext.Provider>
   );
