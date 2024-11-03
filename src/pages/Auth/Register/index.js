@@ -1,22 +1,25 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { auth, firestore } from "../../../config/firebase";
+import { auth, firestore, storage } from "../../../config/firebase";
 // import { AuthContext } from "../../../context/AuthContext";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { AuthContext } from "../../../context/AuthContext";
 import { message } from "antd";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 export default function Register() {
   const [state, setState] = useState({ fullName: "", email: "", password: "" });
+  const [file, setFile] = useState()
   const { dispatch, setIsAppLoading } = useContext(AuthContext);
+
 
   const handleChange = (e) =>
     setState((s) => ({ ...s, [e.target.name]: e.target.value }));
   let { fullName, email, password } = state;
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("project ID", process.env.REACT_APP_PROJECT_ID);
+
     fullName = fullName.trim();
 
     if (fullName.length < 3) {
@@ -34,7 +37,12 @@ export default function Register() {
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
-          setProfile(user);
+          const userData = { fullName, email, uid: user.uid, dateCreated: serverTimestamp(), }
+
+          if (file) {
+            uploadImage(userData)
+          }
+          setProfile(userData);
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -43,22 +51,62 @@ export default function Register() {
           console.log(errorCode);
         });
     }
-    const setProfile = async (user) => {
-      let userData = {
-        fullName: fullName,
-        uid: user.uid,
-        dateCreated: serverTimestamp(),
-      };
-      try {
-        await setDoc(doc(firestore, "users", user.uid), userData);
-        dispatch({ type: "LOGIN", payload: { user: userData } });
-      } catch (error) {
-        console.log("Error adding document: ", error);
-      } finally {
-        setIsAppLoading(false);
+  }
+  const uploadImage = (data) => {
+    const storageRef = ref(storage, "Images/" + file.name);
+
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    console.log(file);
+    // Register three observers:
+    // 1. 'state_changed' observer, called any time the state changes
+    // 2. Error observer, called on failure
+    // 3. Completion observer, called on successful completion
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        // Observe state change events such as progress, pause, and resume
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log("Upload is " + progress + "% done");
+        // switch (snapshot.state) {
+        //   case "paused":
+        //     console.log("Upload is paused");
+        //     break;
+        //   case "running":
+        //     console.log("Upload is running");
+        //     break;
+        // }
+      },
+      (error) => {
+        // Handle unsuccessful uploads
+        console.error(error);
+        message.error("Error uploading", 3);
+      },
+      () => {
+        // Handle successful uploads on complete
+        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log("File available at", downloadURL);
+          let updatedData = { ...data, imageUrl: downloadURL };
+          setProfile(updatedData);
+        });
       }
-    };
+    );
   };
+  const setProfile = async (userData) => {
+
+    const { uid } = userData
+    try {
+      await setDoc(doc(firestore, "users", uid), userData);
+      dispatch({ type: "LOGIN", payload: { user: userData } });
+    } catch (error) {
+      console.log("Error adding document: ", error);
+    } finally {
+      setIsAppLoading(false);
+    }
+  };
+
   // let { fullName, email, password } = state;
   // if (fullName.length > 2 && email !== "" && password.length > 7) {
   //   const newuser = {
@@ -81,14 +129,20 @@ export default function Register() {
   // }
   return (
     <main className="auth py-5">
-      <div className="container">
+      <div className="container text-center">
         <div className="row">
           <div className="col">
+            <div className="col-12 mx-auto  " style={{ maxWidth: 400 }}>
+
+              <h1 className="mb-5 text-dark ">Welcome to Collaborative Notes
+
+              </h1>
+            </div>
             <div
               className="card border-none mx-auto p-3 p-md-4"
               style={{ maxWidth: 400 }}
             >
-              <h2 className="text-primary text-center mb-4">Register</h2>
+              <h2 className="text-dark text-center mb-4">Register</h2>
 
               <form onSubmit={handleSubmit}>
                 <div className="row">
@@ -119,8 +173,17 @@ export default function Register() {
                       onChange={handleChange}
                     />
                   </div>
+                  <div className="col-12 mb-4">
+                    <input
+                      type="file"
+                      className="form-control"
+                      name="image"
+                      // placeholder="Enter Items category here"
+                      onChange={(e) => setFile(e.target.files[0])}
+                    />
+                  </div>
                   <div className="col-12">
-                    <button className="btn btn-primary w-100">Register</button>
+                    <button className="btn btn-dark w-100">Register</button>
                     {/* <p>{message}</p> */}
                     <p className="mb-0 mt-2">
                       Already have an account?{" "}

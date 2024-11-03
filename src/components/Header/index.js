@@ -10,7 +10,7 @@ export default function Header() {
   };
   return (
     <header>
-      <nav className="navbar navbar-expand-lg bg-primary navbar-dark">
+      <nav className="navbar navbar-expand-lg bg-dark navbar-dark">
         <div className="container">
           <Link to="/dashboard/menu" className="navbar-brand">
             Home
@@ -30,7 +30,7 @@ export default function Header() {
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <Link to="/" className="nav-link">
-                  Manage Menu Items
+                  Add Notes
                 </Link>
               </li>
               {/* <li className="nav-item"><Link to="/" className="nav-link">Order Summary</Link></li> */}
@@ -66,6 +66,9 @@ export default function Header() {
               </li>
             </ul>
             {/* <from onSubmit= {handlesubmit}> */}
+            <button className="rounded-1 mx-2 btn btn-info" onClick={handlesubmit}>
+              Profile
+            </button>
             <button className="rounded-1 btn btn-danger" onClick={handlesubmit}>
               Logout
             </button>

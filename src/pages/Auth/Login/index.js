@@ -45,14 +45,20 @@ export default function Login() {
   };
   return (
     <main className="auth py-5">
-      <div className="container">
+      <div className="container text-center">
         <div className="row">
-          <div className="col">
+          <div className="col ">
+            <div className="col-12 mx-auto  " style={{ maxWidth: 400 }}>
+
+              <h1 className="mb-5 text-d  " >Welcome to Collaborative Notes
+
+              </h1>
+            </div>
             <div
               className="card border-none mx-auto p-3 p-md-4"
               style={{ maxWidth: 400 }}
             >
-              <h2 className="text-primary text-center mb-4">Login</h2>
+              <h2 className="text-dark text-center mb-4">Login</h2>
 
               <form onSubmit={handleSubmit}>
                 <div className="row">
@@ -81,7 +87,7 @@ export default function Login() {
                     </p>
                   </div>
                   <div className="col-12">
-                    <button className="btn btn-primary w-100">Login</button>
+                    <button className="btn btn-dark w-100">Login</button>
                     {/* {message && <p>{message}</p>} */}
                     <p className="mb-0 mt-2">
                       Don't have an account?{" "}

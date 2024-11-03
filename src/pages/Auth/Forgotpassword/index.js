@@ -38,7 +38,7 @@ export default function Forgotpassword() {
               className="card border-none mx-auto p-3 p-md-4"
               style={{ maxWidth: 400 }}
             >
-              <h2 className="text-primary text-center mb-4">Reset Password</h2>
+              <h2 className="text-dark text-center mb-4">Reset Password</h2>
 
               <form onSubmit={handleResetPassword}>
                 <div className="row">
@@ -70,7 +70,7 @@ export default function Forgotpassword() {
                     />
                   </div> */}
                   <div className="col-12">
-                    <button className="btn btn-primary w-100">
+                    <button className="btn btn-dark w-100">
                       Reset Password
                     </button>
                     {/* {message && <p>{message}</p>} */}
